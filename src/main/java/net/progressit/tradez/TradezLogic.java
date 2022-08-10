@@ -5,9 +5,11 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 import java.util.function.Consumer;
-import java.util.logging.Logger;
 
 import javax.swing.JOptionPane;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.eventbus.EventBus;
 
@@ -31,7 +33,7 @@ import net.progressit.tradez.panels.transfer.TransferPanel.TransferRequestEvent;
 import net.progressit.util.CollectionsUtil;
 
 public class TradezLogic {
-	private static final Logger LOGGER = Logger.getLogger(TradezLogic.class.getName());
+	private static final Logger LOGGER = LoggerFactory.getLogger(TradezLogic.class.getName());
 	
 	@Data
 	public static class TransferStatusEvent{

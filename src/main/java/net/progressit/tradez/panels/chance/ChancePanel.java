@@ -9,6 +9,9 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.eventbus.EventBus;
 
 import lombok.Data;
@@ -19,6 +22,7 @@ import net.progressit.progressive.PPlacers;
 import net.progressit.progressive.helpers.PSimpleLifecycleHandler;
 
 public class ChancePanel extends PLeafComponent<ChancePanelData, ChancePanelData>{
+	private static final Logger LOGGER = LoggerFactory.getLogger( ChancePanel.class.getName() );
 	
 	@Data
 	public static class ChancePickCardEvent{}
@@ -44,6 +48,7 @@ public class ChancePanel extends PLeafComponent<ChancePanelData, ChancePanelData
 
 	@Override
 	protected void renderSelf(ChancePanelData data) {
+		LOGGER.info("Rendering..");
 		lblAvailableCount.setText(""+data.getAvailableChanceCards().size());
 		lblCurrentChanceMsg.setText( data.getCurrentChanceCard().orElse("") );
 		if(data.getCurrentChanceCard().isEmpty()) {

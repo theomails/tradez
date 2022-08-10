@@ -4,7 +4,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.progressit.tradez.model.Holdings;
 import net.progressit.tradez.model.Player;
@@ -16,7 +18,7 @@ import net.progressit.tradez.panels.transfer.TransferPanel.TransferRequestEvent;
 import net.progressit.util.CollectionsUtil;
 
 public class TradezTransactionLogic {
-	private static final Logger LOGGER = Logger.getLogger(TradezTransactionLogic.class.getName());
+	private static final Logger LOGGER = LoggerFactory.getLogger(TradezTransactionLogic.class.getName());
 	
 	public boolean doTransfter(TradezData data, TransferRequestEvent tr, Consumer<TradezData> dataSetter) {
 		LOGGER.info("TRF");

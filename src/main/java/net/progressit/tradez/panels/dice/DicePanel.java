@@ -8,6 +8,9 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.eventbus.EventBus;
 
 import lombok.Data;
@@ -18,6 +21,7 @@ import net.progressit.progressive.PPlacers;
 import net.progressit.progressive.helpers.PSimpleLifecycleHandler;
 
 public class DicePanel extends PLeafComponent<DicePanelData, DicePanelData>{
+	private static final Logger LOGGER = LoggerFactory.getLogger( DicePanel.class.getName() );
 	
 	@Data
 	public static class DiceRequestRollEvent{}
@@ -41,6 +45,7 @@ public class DicePanel extends PLeafComponent<DicePanelData, DicePanelData>{
 
 	@Override
 	protected void renderSelf(DicePanelData data) {
+		LOGGER.info("Rendering..");
 		if(data.getCurrentPlayer().isPresent()) {
 			btnRollDice.setText("Roll Dice for " + data.getCurrentPlayer().get().getName());
 		}else {

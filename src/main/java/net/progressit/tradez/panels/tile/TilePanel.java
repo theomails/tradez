@@ -13,6 +13,9 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.eventbus.EventBus;
 
 import lombok.Data;
@@ -26,6 +29,7 @@ import net.progressit.tradez.model.Tile;
 import net.progressit.tradez.panels.tile.TilePanelData.TileBounds;
 
 public class TilePanel extends PLeafComponent<TilePanelData, TilePanelData>{
+	private static final Logger LOGGER = LoggerFactory.getLogger(TilePanel.class.getName());
 
 	@Data
 	public static class TileClicked{
@@ -54,6 +58,7 @@ public class TilePanel extends PLeafComponent<TilePanelData, TilePanelData>{
 
 	@Override
 	protected void renderSelf(TilePanelData data) {
+		LOGGER.info("Rendering..");
 		setLabelText(labelName, Optional.of(data.getTile().getName()));
 		
 		setLabelText(labelDescription,data.getTile().getDescription());

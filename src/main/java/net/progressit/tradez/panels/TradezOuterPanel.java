@@ -9,11 +9,13 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
-import java.util.logging.Logger;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
@@ -58,7 +60,7 @@ import net.progressit.tradez.panels.transfer.TransferPanel.TransferRequestEvent;
 import net.progressit.tradez.panels.transfer.TransferPanelData;
 
 public class TradezOuterPanel extends PComponent<TradezData, TradezData>{
-	private static final Logger LOGGER = Logger.getLogger(TradezOuterPanel.class.getName());
+	private static final Logger LOGGER = LoggerFactory.getLogger(TradezOuterPanel.class.getName());
 	
 	@Data
 	public static class Ref<T>{
@@ -164,6 +166,7 @@ public class TradezOuterPanel extends PComponent<TradezData, TradezData>{
 
 	@Override
 	protected void renderSelf(TradezData data) {
+		LOGGER.info("Rendering..");
 		int tw = data.getTileWidth();
 		int th = data.getTileHeight();
 		int ox = data.getOriginX();

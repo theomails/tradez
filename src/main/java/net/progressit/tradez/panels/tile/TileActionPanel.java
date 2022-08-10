@@ -10,6 +10,9 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.eventbus.EventBus;
 
 import net.miginfocom.swing.MigLayout;
@@ -21,6 +24,7 @@ import net.progressit.progressive.PPlacers;
 import net.progressit.progressive.helpers.PSimpleLifecycleHandler;
 
 public class TileActionPanel extends PComponent<TilePanelData, TilePanelData>{
+	private static final Logger LOGGER = LoggerFactory.getLogger(TileActionPanel.class.getName());
 	
 	public static class JumpToSelectedTile{}
 	public static class BuySelectedTile{}
@@ -44,6 +48,7 @@ public class TileActionPanel extends PComponent<TilePanelData, TilePanelData>{
 
 	@Override
 	protected void renderSelf(TilePanelData data) {
+		LOGGER.info("Rendering..");
 		btnJumpHere.setEnabled( data.getCurrentPlayer().isPresent() );
 		btnBuyTile.setEnabled( data.getCurrentPlayer().isPresent() && data.getOwner().isEmpty() && data.getTile().isBuyable() );
 		btnAddTicketBooth.setEnabled(data.getOwner().isPresent() && data.getTile().isHouseAllowed() && data.getNumHouses().orElse(0)<2);

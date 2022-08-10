@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.logging.Logger;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
@@ -15,6 +14,9 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
@@ -32,7 +34,7 @@ import net.progressit.tradez.panels.player.PlayersPanel.PlayerSelectedEvent;
 import net.progressit.util.CollectionsUtil;
 
 public class TransferPanel extends PLeafComponent<TransferPanelData, TransferPanelData>{
-	private static final Logger LOGGER = Logger.getLogger(TransferPanel.class.getName());
+	private static final Logger LOGGER = LoggerFactory.getLogger(TransferPanel.class.getName());
 	
 	public enum TransferPartyType { PLAYER, BANK, UNCLE }
 	
@@ -120,6 +122,7 @@ public class TransferPanel extends PLeafComponent<TransferPanelData, TransferPan
 
 	@Override
 	protected void renderSelf(TransferPanelData data) {
+		LOGGER.info("Rendering..");
 		if(data.getFrom().isEmpty()) {
 			LOGGER.info("EMPTY");
 		}

@@ -9,6 +9,9 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.eventbus.EventBus;
 
 import net.miginfocom.swing.MigLayout;
@@ -20,6 +23,7 @@ import net.progressit.tradez.model.Holdings;
 import net.progressit.tradez.model.Tile;
 
 public class HoldingsPanel extends PLeafComponent<HoldingsPanelData, HoldingsPanelData>{
+	private static final Logger LOGGER = LoggerFactory.getLogger(HoldingsPanel.class.getName());
 
 	private JPanel pnlPlayerHoldings = new JPanel(new MigLayout("insets 10","[grow, fill]","[fill]"));
 	private JLabel lblHeldCurrency = new JLabel();
@@ -36,6 +40,7 @@ public class HoldingsPanel extends PLeafComponent<HoldingsPanelData, HoldingsPan
 
 	@Override
 	protected void renderSelf(HoldingsPanelData data) {
+		LOGGER.info("Rendering..");
 		Optional<String> currenciesString = data.getDisplayedHoldings()
 				.map( (h)->{ return heldCurrenciesAsString(h);});
 			

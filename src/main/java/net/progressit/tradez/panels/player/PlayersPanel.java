@@ -6,12 +6,14 @@ import java.awt.event.MouseEvent;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.logging.Logger;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
@@ -34,7 +36,7 @@ import net.progressit.tradez.panels.holdings.HoldingsPanel;
 import net.progressit.tradez.panels.holdings.HoldingsPanelData;
 
 public class PlayersPanel extends PComponent<PlayersPanelData, PlayersPanelData>{
-	private static final Logger LOGGER = Logger.getLogger(PlayersPanel.class.getName());
+	private static final Logger LOGGER = LoggerFactory.getLogger(PlayersPanel.class.getName());
 
 	@Data
 	public static class PlayerSelectedEvent{
@@ -67,6 +69,7 @@ public class PlayersPanel extends PComponent<PlayersPanelData, PlayersPanelData>
 
 	@Override
 	protected void renderSelf(PlayersPanelData data) {
+		LOGGER.info("Rendering..");
 		pnlTokens.removeAll();
 		
 		data.getAllPlayers().forEach((p)->{
