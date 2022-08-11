@@ -8,6 +8,7 @@ import java.util.function.Consumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.progressit.tradez.TradezKeyEvents.TKETransferRequestCompleted;
 import net.progressit.tradez.model.Holdings;
 import net.progressit.tradez.model.Player;
 import net.progressit.tradez.model.TradezData;
@@ -19,9 +20,17 @@ import net.progressit.util.CollectionsUtil;
 public class TradezTransactionLogic {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TradezTransactionLogic.class.getName());
 	
-	public boolean doTransfter(TradezData data, DoTransferClick tr, Consumer<TradezData> dataSetter) {
+	public TKETransferRequestCompleted doTransfter(TradezData data, DoTransferClick tr, Consumer<TradezData> dataSetter) {
 		LOGGER.info("TRF");
-		if(tr.getFrom().equals(tr.getTo())) return true;
+		if(tr.getFrom().equals(tr.getTo())) {
+			return TKETransferRequestCompleted.builder()
+					.successful(true)
+					.from(tr.from)
+					.to(tr.to)
+					.send(tr.send)
+					.receive(tr.receive)
+					.build();
+		}
 		
 		LOGGER.info("1");
 		Holdings fromHoldings = getPartyHoldings(tr.getFrom(), data);
@@ -43,7 +52,12 @@ public class TradezTransactionLogic {
 		boolean ok2 = checkFeasibility(toBagCopy, receiveCopy);
 		
 		LOGGER.info("5");
-		if(!ok1 || !ok2) return false;
+		if(!ok1 || !ok2) {
+			return TKETransferRequestCompleted.builder()
+					.successful(false)
+					.failureReason(ok1?"Not enough curreny notes to send.":"Not enough currency notes to return.")
+					.build();
+		}
 		
 		LOGGER.info("Pre fromBagCopy: " + fromBagCopy);
 		LOGGER.info("Pre toBagCopy: " + toBagCopy);
@@ -58,7 +72,13 @@ public class TradezTransactionLogic {
 		
 		LOGGER.info("7");
 		dataSetter.accept(data2);
-		return true;
+		return TKETransferRequestCompleted.builder()
+				.successful(true)
+				.from(tr.from)
+				.to(tr.to)
+				.send(sendCopy)
+				.receive(receiveCopy)
+				.build();
 	}
 
 

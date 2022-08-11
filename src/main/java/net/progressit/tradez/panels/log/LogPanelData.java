@@ -4,10 +4,10 @@ import java.util.List;
 
 import lombok.Builder;
 import lombok.Data;
-import net.progressit.tradez.TradezLogic.LogEvent;
+import net.progressit.tradez.TradezKeyEvents.TradezKeyEvent;
 
 @Data
 @Builder(toBuilder = true)
 public class LogPanelData {
-	private final List<LogEvent> loggedEvents;
+	private final List<TradezKeyEvent> loggedEvents;
 }

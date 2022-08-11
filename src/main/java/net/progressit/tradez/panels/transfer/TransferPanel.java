@@ -28,7 +28,7 @@ import net.progressit.progressive.PLeafComponent;
 import net.progressit.progressive.PLifecycleHandler;
 import net.progressit.progressive.PPlacers;
 import net.progressit.progressive.helpers.PSimpleLifecycleHandler;
-import net.progressit.tradez.TradezLogic.TransferStatusEvent;
+import net.progressit.tradez.TradezKeyEvents.TKETransferRequestCompleted;
 import net.progressit.tradez.model.Player;
 import net.progressit.tradez.panels.player.PlayersPanel.PlayerSelectedEvent;
 import net.progressit.util.CollectionsUtil;
@@ -231,7 +231,7 @@ public class TransferPanel extends PLeafComponent<TransferPanelData, TransferPan
 	}
 	
 	@Subscribe
-	public void handle(TransferStatusEvent tse) {
+	public void handle(TKETransferRequestCompleted tse) {
 		LOGGER.info("TransferStatusEvent " + tse);
 		if(tse.isSuccessful()) {
 			TransferPanelData data = getData();
