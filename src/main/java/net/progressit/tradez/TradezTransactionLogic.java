@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import net.progressit.tradez.model.Holdings;
 import net.progressit.tradez.model.Player;
 import net.progressit.tradez.model.TradezData;
-import net.progressit.tradez.model.TradezData.TradezDataBuilder;
 import net.progressit.tradez.panels.transfer.TransferPanel.TransferParty;
 import net.progressit.tradez.panels.transfer.TransferPanel.TransferPartyType;
 import net.progressit.tradez.panels.transfer.TransferPanel.TransferRequestEvent;
@@ -54,17 +53,16 @@ public class TradezTransactionLogic {
 		LOGGER.info("Post toBagCopy: " + toBagCopy);
 		
 		LOGGER.info("6");
-		TradezDataBuilder dataBuilder = data.toBuilder();
-		updateDataForParty(data, dataBuilder, tr.getFrom(), fromBagCopy);
-		updateDataForParty(data, dataBuilder, tr.getTo(), toBagCopy);
+		TradezData data1 = updateDataForParty(data, tr.getFrom(), fromBagCopy);
+		TradezData data2 = updateDataForParty(data1, tr.getTo(), toBagCopy);
 		
 		LOGGER.info("7");
-		dataSetter.accept(dataBuilder.build());
+		dataSetter.accept(data2);
 		return true;
 	}
 
 
-	private Holdings getPartyHoldings(TransferParty tp, TradezData data) {
+	Holdings getPartyHoldings(TransferParty tp, TradezData data) {
 		if(tp.getType()==TransferPartyType.PLAYER) {
 			return data.getPlayerHoldings().get(tp.getPlayer().get());
 		}else if(tp.getType()==TransferPartyType.BANK) {
@@ -76,7 +74,7 @@ public class TradezTransactionLogic {
 		}
 	}
 	
-	private void netOffBags(Map<Integer, Integer> send, Map<Integer, Integer> receive) {
+	void netOffBags(Map<Integer, Integer> send, Map<Integer, Integer> receive) {
 		Set<Integer> currency = new HashSet<>();
 		currency.addAll(send.keySet());
 		currency.addAll(receive.keySet());
@@ -102,10 +100,12 @@ public class TradezTransactionLogic {
 					sendVal = 0;
 				}
 			}
+			send.put(cur, sendVal);
+			receive.put(cur, receiveVal);
 		}
 	}
 	
-	private boolean checkFeasibility(Map<Integer, Integer> holding, Map<Integer, Integer> transaction) {
+	boolean checkFeasibility(Map<Integer, Integer> holding, Map<Integer, Integer> transaction) {
 		Set<Integer> currency = transaction.keySet();
 		for(Integer cur: currency) {
 			Integer has = holding.get(cur);
@@ -117,7 +117,7 @@ public class TradezTransactionLogic {
 		return true;
 	}
 	
-	private void moveMoney(Map<Integer, Integer> fromBag, Map<Integer, Integer> toBag, Map<Integer, Integer> transaction) {
+	void moveMoney(Map<Integer, Integer> fromBag, Map<Integer, Integer> toBag, Map<Integer, Integer> transaction) {
 		Set<Integer> currency = transaction.keySet();
 		for(Integer cur: currency) {
 			Integer from = fromBag.get(cur);
@@ -133,17 +133,21 @@ public class TradezTransactionLogic {
 		}
 	}
 	
-	private void updateDataForParty(TradezData data, TradezDataBuilder dataBuilder, TransferParty tp, Map<Integer, Integer> holdingBagCopy) {
+	TradezData updateDataForParty(TradezData data, TransferParty tp, Map<Integer, Integer> holdingBagCopy) {
 		if(tp.getType()==TransferPartyType.PLAYER) {
 			Map<Player, Holdings> playerHoldingsCopy = CollectionsUtil.cloneToHashMap(data.getPlayerHoldings());
 			Holdings thisPlayerHoldings = playerHoldingsCopy.get(tp.getPlayer().get());
 			Holdings thisPlayerHoldingsNew = thisPlayerHoldings.toBuilder().currencyPossessionMap(holdingBagCopy).build();
 			playerHoldingsCopy.put(tp.getPlayer().get(), thisPlayerHoldingsNew);
-			dataBuilder.playerHoldings(playerHoldingsCopy);
+			return data.toBuilder().playerHoldings(playerHoldingsCopy).build();
 		}else if(tp.getType()==TransferPartyType.BANK) {
-			dataBuilder.bankHoldings( data.getBankHoldings().toBuilder().currencyPossessionMap(holdingBagCopy).build() );
+			return data.toBuilder().bankHoldings( 
+					data.getBankHoldings().toBuilder().currencyPossessionMap(holdingBagCopy).build() 
+				).build();
 		}else if(tp.getType()==TransferPartyType.UNCLE) {
-			dataBuilder.uncleHoldings( data.getUncleHoldings().toBuilder().currencyPossessionMap(holdingBagCopy).build() );
+			return data.toBuilder().uncleHoldings( 
+					data.getUncleHoldings().toBuilder().currencyPossessionMap(holdingBagCopy).build() 
+				).build();
 		}else {
 			throw new RuntimeException("Unhandled TP type");
 		}

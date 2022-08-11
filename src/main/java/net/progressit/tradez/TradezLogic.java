@@ -43,6 +43,7 @@ public class TradezLogic {
 	private final EventBus globalBus;
 	private final TradezOuterPanel tradezPanel;
 	private final Consumer<TradezData> tradeDataSetter;
+	private final Random random = new Random(System.nanoTime());
 	public TradezLogic(TradezOuterPanel tradezPanel, Consumer<TradezData> tradeDataSetter, EventBus globalBus) {
 		super();
 		this.tradezPanel = tradezPanel;
@@ -114,7 +115,7 @@ public class TradezLogic {
 	public void handle(DiceRequestRollEvent drr ) {
 		TradezData data = getTradeData();
 		//Throw random dice and set that dice value for display
-		int diceValue = new Random(System.currentTimeMillis()).nextInt(6) + 1;
+		int diceValue = random.nextInt(6) + 1;
 		setTradeData(data.toBuilder()
 				.currentDiceValue(Optional.of(diceValue))
 				.build());
