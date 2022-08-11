@@ -243,9 +243,13 @@ public class TransferPanel extends PLeafComponent<TransferPanelData, TransferPan
 	public void handle(PlayerSelectedEvent ps) {
 		LOGGER.info("PlayerSelectedEvent " + ps);
 		TransferPanelData data = getData();
+		
 		TransferParty from = TransferParty.builder().type(TransferPartyType.PLAYER).player(Optional.of(ps.getPlayer())).build();
-		LOGGER.info("Selecting " + from);
-		setData( data.toBuilder().from(Optional.of(from)).build());
+		LOGGER.info("Selecting from: " + from);
+		TransferParty to = TransferParty.builder().type(TransferPartyType.BANK).build();
+		LOGGER.info("Selecting to:" + to);
+		
+		setData( data.toBuilder().from(Optional.of(from)).to(Optional.of(to)).build());
 	}
 
 	private TransferPanelData getEnsureEntriesData(TransferPanelData data) {

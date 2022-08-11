@@ -2,9 +2,8 @@
 <Configuration status="debug" name="tradez" packages="">
 	<Appenders>
 		<Console name="app_stdout" target="SYSTEM_OUT">
-    <!--  PatternLayout pattern="%date{HH:mm:ss,SSS} %t %-5level %class{1.}:%method:: %message %n" / -->
-    <PatternLayout pattern="%date %t %-5level %message %n" />
-		</Console>
+    <PatternLayout pattern="%date{HH:mm:ss,SSS} %t %-5level %class{1.}:%method:: %message %n"/>
+    	</Console>
 	</Appenders>
 	<Loggers>
 		<Logger name="net.progressit.tradez" level="debug">

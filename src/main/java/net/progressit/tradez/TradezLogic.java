@@ -89,20 +89,23 @@ public class TradezLogic {
 				.allPlayers(playersNew)
 				.playerHoldings(playerHoldingsNew)
 				.playerPosition(playerPositionsNew)
-				.currentPlayer(Optional.of(player))
 				.build());
 		
-		globalBus.post(new PlayerSelectedEvent(pa.getPlayer()));
+		if(playersNew.size()==1) {
+			//When first player gets added, select player
+			LOGGER.info("Selecting player:: " + pa.getPlayer());
+			handle(new PlayerSelectedEvent(pa.getPlayer()));
+		}
 	}
 	public void handle(PlayerSelectedEvent ps) {
 		LOGGER.info("Player selected: " + ps);
 		TradezData data = getTradeData();
 		//Select that Player and his current positioned Tile
 		Optional<Integer> playerPosition = data.getCurrentPlayer().map( (p)-> data.getPlayerPosition().get(p) );
-		Optional<Tile> newTile = playerPosition.map( (i) -> data.getAllTiles().get(i) );
+		Optional<Tile> playerTile = playerPosition.map( (i) -> data.getAllTiles().get(i) );
 		setTradeData(data.toBuilder()
 				.currentPlayer(Optional.of(ps.getPlayer()))
-				.currentTile(newTile)
+				.currentTile(playerTile)
 				.build());
 		
 		globalBus.post(ps);
