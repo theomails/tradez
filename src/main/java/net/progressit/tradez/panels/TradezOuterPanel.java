@@ -44,6 +44,8 @@ import net.progressit.tradez.panels.dice.DicePanel.DiceRequestRollEvent;
 import net.progressit.tradez.panels.dice.DicePanel.MovePlayerEvent;
 import net.progressit.tradez.panels.holdings.HoldingsPanel;
 import net.progressit.tradez.panels.holdings.HoldingsPanelData;
+import net.progressit.tradez.panels.log.LogPanel;
+import net.progressit.tradez.panels.log.LogPanelData;
 import net.progressit.tradez.panels.player.PlayersPanel;
 import net.progressit.tradez.panels.player.PlayersPanel.PlayerSelectedEvent;
 import net.progressit.tradez.panels.player.PlayersPanelData;
@@ -263,6 +265,16 @@ public class TradezOuterPanel extends PComponent<TradezData, TradezData>{
 				.listener(Optional.of(transferListener))
 				.build();
 		childrenPlan.addChildPlan(trfPanelPlan);
+		
+		LogPanelData logData = LogPanelData.builder()
+				.loggedEvents(List.of())
+				.build();
+		PChildPlan logPanelPlan = PChildPlan.builder()
+				.component(new LogPanel(rightPanelPlacer, getGlobalBus()))
+				.props(logData)
+				.listener(Optional.empty())
+				.build();
+		childrenPlan.addChildPlan(logPanelPlan);
 		
 		return childrenPlan;
 	}

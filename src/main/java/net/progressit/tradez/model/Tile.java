@@ -18,6 +18,8 @@ public class Tile {
 	@Builder.Default
 	private final Optional<Color> color = Optional.empty();
 	@Builder.Default
+	private final Optional<Color> fontColor = Optional.of(Color.white);
+	@Builder.Default
 	private final boolean buyable = true;
 	@Builder.Default
 	private final Optional<Integer> priceOrCharge = Optional.empty();

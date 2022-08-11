@@ -93,7 +93,15 @@ public class TradezConfig {
 	}
 	
 	public static Holdings initialHoldingsForUncle() {
-		return Holdings.builder().build();
+		Map<Integer, Integer> currencyPossessionMap = new LinkedHashMap<>();
+		currencyPossessionMap.put(5, 0);
+		currencyPossessionMap.put(4, 0);
+		currencyPossessionMap.put(3, 0);
+		currencyPossessionMap.put(2, 0);
+		currencyPossessionMap.put(1, 0);
+		return Holdings.builder()
+				.currencyPossessionMap(currencyPossessionMap)
+				.build();
 	}
 	
 	public static List<Tile> getAllTiles(){

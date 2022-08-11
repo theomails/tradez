@@ -65,10 +65,11 @@ public class TilePanel extends PLeafComponent<TilePanelData, TilePanelData>{
 		setLabelText(labelOwner,data.getOwner().map(Player::getName));
 		setLabelText(labelPrice, data.getTile().getPriceOrCharge().map( (p)->{ return "$"+p; } ));
 		setLabelText(labelBaseRent, data.getTile().getBaseRent().map( (p)->{ return "Base rent $"+p; } ));
-		setLabelText(labelTitle, Optional.of(data.getNumHouses().map( (i)->{return ""+i;}).orElse("") ));
+		setLabelText(labelTitle, Optional.of(data.getNumHouses().map( (i)->{return "Booths "+i;}).orElse("") ));
 		
 		if(data.getTile().getColor().isPresent()) {
 			labelTitle.setBackground(data.getTile().getColor().get());
+			labelTitle.setForeground(data.getTile().getFontColor().get());
 			labelTitle.setOpaque(true);
 		}else {
 			labelTitle.setOpaque(false);

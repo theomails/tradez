@@ -11,6 +11,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.border.Border;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -80,9 +81,13 @@ public class PlayersPanel extends PComponent<PlayersPanelData, PlayersPanelData>
 			lPlayer.setBackground(p.getColor());
 			lPlayer.setOpaque(true);
 			if(selectedPlayer) {
-				lPlayer.setBorder(BorderFactory.createLineBorder(Color.orange, 2));
+				Border outerBorder = BorderFactory.createLineBorder(Color.orange, 2);
+				Border innerBorder = BorderFactory.createEmptyBorder(5, 10, 5, 10);
+				lPlayer.setBorder(BorderFactory.createCompoundBorder(outerBorder, innerBorder));
 			}else {
-				lPlayer.setBorder(BorderFactory.createLineBorder(Color.gray));
+				Border outerBorder = BorderFactory.createLineBorder(Color.gray);
+				Border innerBorder = BorderFactory.createEmptyBorder(5, 10, 5, 10);
+				lPlayer.setBorder(BorderFactory.createCompoundBorder(outerBorder, innerBorder));
 			}
 			pnlTokens.add(lPlayer);
 			lPlayer.addMouseListener( new MouseAdapter() {

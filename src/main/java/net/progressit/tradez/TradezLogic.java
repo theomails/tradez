@@ -39,6 +39,10 @@ public class TradezLogic {
 	public static class TransferStatusEvent{
 		private final boolean successful;
 	}
+	@Data
+	public static class LogEvent{
+		private final Object originalEvent;
+	}
 	
 	private final EventBus globalBus;
 	private final TradezOuterPanel tradezPanel;
@@ -52,6 +56,9 @@ public class TradezLogic {
 	}
 
 	//Convenience functions
+	private void log(Object event) {
+		globalBus.post(new LogEvent(event));
+	}
 	private TradezData getTradeData() {
 		return tradezPanel.getData();
 	}
@@ -61,6 +68,8 @@ public class TradezLogic {
 	
 	public void handle(TileClicked tc) {
 		LOGGER.info("Tile clicked: " + tc);
+		log(tc);
+		
 		TradezData data = getTradeData();
 		//Select that tile
 		setTradeData(data.toBuilder()
@@ -71,6 +80,8 @@ public class TradezLogic {
 	
 	public void handle(PlayerAddedEvent pa) {
 		LOGGER.info("Player added: " + pa);
+		log(pa);
+		
 		TradezData data = getTradeData();
 		Player player = pa.getPlayer();
 		
@@ -78,12 +89,10 @@ public class TradezLogic {
 		List<Player> playersNew = CollectionsUtil.cloneToArrayList(players);
 		playersNew.add(player);
 		
-		Map<Player, Holdings> playerHoldings = data.getPlayerHoldings();
-		Map<Player, Holdings> playerHoldingsNew = CollectionsUtil.cloneToHashMap(playerHoldings);
+		Map<Player, Holdings> playerHoldingsNew = CollectionsUtil.cloneToHashMap(data.getPlayerHoldings());
 		playerHoldingsNew.put(player, TradezConfig.initialHoldingsForPlayer());
 		
-		Map<Player, Integer> playerPositions = data.getPlayerPosition();
-		Map<Player, Integer> playerPositionsNew = CollectionsUtil.cloneToHashMap(playerPositions);
+		Map<Player, Integer> playerPositionsNew = CollectionsUtil.cloneToHashMap(data.getPlayerPosition());
 		playerPositionsNew.put(player, 0);
 		
 		setTradeData(data.toBuilder()
@@ -100,19 +109,23 @@ public class TradezLogic {
 	}
 	public void handle(PlayerSelectedEvent ps) {
 		LOGGER.info("Player selected: " + ps);
+		log(ps);
+		
 		TradezData data = getTradeData();
 		//Select that Player and his current positioned Tile
-		Optional<Integer> playerPosition = data.getCurrentPlayer().map( (p)-> data.getPlayerPosition().get(p) );
-		Optional<Tile> playerTile = playerPosition.map( (i) -> data.getAllTiles().get(i) );
+		Integer playerPosition = data.getPlayerPosition().get(ps.getPlayer());
+		Tile playerTile = data.getAllTiles().get(playerPosition);
 		setTradeData(data.toBuilder()
 				.currentPlayer(Optional.of(ps.getPlayer()))
-				.currentTile(playerTile)
+				.currentTile(Optional.of(playerTile))
 				.build());
 		
 		globalBus.post(ps);
 	}
 	
 	public void handle(DiceRequestRollEvent drr ) {
+		log(drr);
+		
 		TradezData data = getTradeData();
 		//Throw random dice and set that dice value for display
 		int diceValue = random.nextInt(6) + 1;
@@ -122,6 +135,8 @@ public class TradezLogic {
 	}
 	
 	public void handle(MovePlayerEvent mp ) {
+		log(mp);
+		
 		TradezData data = getTradeData();
 		//Get current displayed dice value, get current player, get his/her position, move to new position, consider bounds
 		int diceValue = data.getCurrentDiceValue().get();
@@ -134,6 +149,8 @@ public class TradezLogic {
 	
 	public void handle(ChancePickCardEvent cpc) {
 		LOGGER.info("ChancePickCardEvent: " + cpc);
+		log(cpc);
+		
 		TradezData data = getTradeData();
 		//Remove one chance card from available, set the current chance card for display
 		List<String> copyChanceCards = CollectionsUtil.cloneToArrayList(data.getAvailableChanceCards());
@@ -148,6 +165,7 @@ public class TradezLogic {
 	}
 	public void handle(ChanceClearCurrentCardEvent cclear) {
 		LOGGER.info("ChanceClearCurrentCardEvent: " + cclear);
+		
 		TradezData data = getTradeData();
 		//Clear current chance card
 		setTradeData(data.toBuilder()
@@ -155,10 +173,14 @@ public class TradezLogic {
 				.build());
 	}
 	public void handle(JumpToSelectedTile j) {
+		log(j);
+		
 		int newTileIndex = getTradeData().getAllTiles().indexOf(getTradeData().getCurrentTile().get());
 		moveCurrentPlayer(getTradeData(), newTileIndex);
 	}
 	public void handle(BuySelectedTile b) {
+		log(b);
+		
 		TradezData data = getTradeData();
 		Player player = data.getCurrentPlayer().get();
 		Tile tile = data.getCurrentTile().get();
@@ -170,6 +192,8 @@ public class TradezLogic {
 		setTradeData(data.toBuilder().playerHoldings(playerHoldingsCopy).build());
 	}
 	public void handle(AddTicketBooth a) {
+		log(a);
+		
 		TradezData data = getTradeData();
 		Map<Tile, Integer> tileHousesNew = CollectionsUtil.cloneToHashMap(data.getTileHouses());
 		Integer curTileHouses = tileHousesNew.get(data.getCurrentTile().get());
@@ -194,6 +218,8 @@ public class TradezLogic {
 	
 	public void handle(TransferRequestEvent tr) {
 		LOGGER.info("Logic to TTL");
+		log(tr);
+		
 		boolean success = new TradezTransactionLogic().doTransfter(getTradeData(), tr, tradeDataSetter);
 		if(!success) {
 			JOptionPane.showMessageDialog(null, "Not enough of the selected currency to make the transfer!", "Transfer Error", JOptionPane.ERROR_MESSAGE);

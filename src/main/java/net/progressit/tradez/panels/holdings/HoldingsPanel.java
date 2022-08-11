@@ -1,6 +1,7 @@
 package net.progressit.tradez.panels.holdings;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -43,14 +44,17 @@ public class HoldingsPanel extends PLeafComponent<HoldingsPanelData, HoldingsPan
 		LOGGER.info("Rendering..");
 		Optional<String> currenciesString = data.getDisplayedHoldings()
 				.map( (h)->{ return heldCurrenciesAsString(h);});
+		
+		Optional<String> currenciesTotalString = data.getDisplayedHoldings()
+				.map( (h)->{ return heldCurrenciesTotalAsString(h);});
 			
-			Optional<String> tilesString = data.getDisplayedHoldings()
+		Optional<String> tilesString = data.getDisplayedHoldings()
 				.map( (h)->{ return heldTilesAsString(h);});
-			
-			setLabelText(lblHeldCurrency, currenciesString.map( (s)->{ return "Money: " + s; } ).orElse("") );
-			setLabelText(lblHeldTiles, tilesString.map( (s)->{ return "".equals(s)?"": "Tiles: " + s; } ).orElse("") );
+		
+		setLabelText(lblHeldCurrency, currenciesString.map( (s)->{ return "Money: " + s + "  :: " + currenciesTotalString.get(); } ).orElse("") );
+		setLabelText(lblHeldTiles, tilesString.map( (s)->{ return "".equals(s)?"": "Tiles: " + s; } ).orElse("") );
 
-			pnlPlayerHoldings.setBorder(BorderFactory.createTitledBorder(data.getPanelTitle()));
+		pnlPlayerHoldings.setBorder(BorderFactory.createTitledBorder(data.getPanelTitle()));
 	}
 
 	@Override
@@ -81,6 +85,14 @@ public class HoldingsPanel extends PLeafComponent<HoldingsPanelData, HoldingsPan
 				.stream()
 				.map( (e)->{ return "$"+e.getKey()+" x "+e.getValue(); })
 				.collect(Collectors.joining(", "));
+	}
+	
+	private static String heldCurrenciesTotalAsString(Holdings h) {
+		return "$" + h.getCurrencyPossessionMap()
+				.entrySet()
+				.stream()
+				.reduce(Map.entry(1, 0), (cumlEntry, next)->{ return Map.entry(1, cumlEntry.getValue() + next.getKey()*next.getValue()); })
+				.getValue();
 	}
 	
 	private static String heldTilesAsString(Holdings h) {
