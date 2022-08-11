@@ -24,10 +24,10 @@ public class DicePanel extends PLeafComponent<DicePanelData, DicePanelData>{
 	private static final Logger LOGGER = LoggerFactory.getLogger( DicePanel.class.getName() );
 	
 	@Data
-	public static class DiceRequestRollEvent{}
+	public static class DiceRollClick{}
 	
 	@Data
-	public static class MovePlayerEvent{}
+	public static class MovePlayerByDiceClick{}
 
 	private JPanel panel = new JPanel(new MigLayout("insets 10","[][grow, fill][]","[][]"));
 	private JButton btnRollDice = new JButton("Roll Dice");
@@ -73,8 +73,8 @@ public class DicePanel extends PLeafComponent<DicePanelData, DicePanelData>{
 				
 				lblDiceValue.setFont(lblDiceValue.getFont().deriveFont(Font.BOLD));
 				
-				btnRollDice.addActionListener( (e)-> DicePanel.this.post( new DiceRequestRollEvent() ) );
-				btnMovePlayer.addActionListener( (e)-> DicePanel.this.post( new MovePlayerEvent() ) );
+				btnRollDice.addActionListener( (e)-> DicePanel.this.post( new DiceRollClick() ) );
+				btnMovePlayer.addActionListener( (e)-> DicePanel.this.post( new MovePlayerByDiceClick() ) );
 
 			}
 			@Override
@@ -86,7 +86,7 @@ public class DicePanel extends PLeafComponent<DicePanelData, DicePanelData>{
 
 	@Override
 	protected List<Class<?>> declareEmittedEvents() {
-		return List.of(DiceRequestRollEvent.class, MovePlayerEvent.class);
+		return List.of(DiceRollClick.class, MovePlayerByDiceClick.class);
 	}
 
 }

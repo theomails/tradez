@@ -22,7 +22,7 @@ import net.progressit.tradez.model.Player;
 import net.progressit.tradez.model.TradezData;
 import net.progressit.tradez.panels.transfer.TransferPanel.TransferParty;
 import net.progressit.tradez.panels.transfer.TransferPanel.TransferPartyType;
-import net.progressit.tradez.panels.transfer.TransferPanel.TransferRequestEvent;
+import net.progressit.tradez.panels.transfer.TransferPanel.DoTransferClick;
 
 @ExtendWith(MockitoExtension.class)
 public class TradezTransactionLogicTest {
@@ -62,7 +62,7 @@ public class TradezTransactionLogicTest {
 		Map<Integer, Integer> send = Map.of(5,1,3,1);
 		Map<Integer, Integer> receive = Map.of(4,1,2,1);
 		
-		TransferRequestEvent tre = TransferRequestEvent.builder()
+		DoTransferClick tre = DoTransferClick.builder()
 				.from(TransferParty.builder().type(TransferPartyType.PLAYER).player(Optional.of(p1)).build())
 				.to(TransferParty.builder().type(TransferPartyType.PLAYER).player(Optional.of(p2)).build())
 				.send(send)

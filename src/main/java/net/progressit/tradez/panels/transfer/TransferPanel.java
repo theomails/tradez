@@ -60,7 +60,7 @@ public class TransferPanel extends PLeafComponent<TransferPanelData, TransferPan
 	
 	@Data
 	@Builder
-	public static class TransferRequestEvent{
+	public static class DoTransferClick{
 		public final TransferParty from;
 		public final TransferParty to;
 		public final Map<Integer, Integer> send;
@@ -199,7 +199,7 @@ public class TransferPanel extends PLeafComponent<TransferPanelData, TransferPan
 				btnTransfer.addActionListener( (e)-> {
 					TransferPanelData data = getData();
 					LOGGER.info("TP Sending");
-					TransferPanel.this.post( new TransferRequestEvent(data.getFrom().get(), data.getTo().get(), data.getSend(), data.getReceive()) );
+					TransferPanel.this.post( new DoTransferClick(data.getFrom().get(), data.getTo().get(), data.getSend(), data.getReceive()) );
 				});
 				
 			}
@@ -265,7 +265,7 @@ public class TransferPanel extends PLeafComponent<TransferPanelData, TransferPan
 	
 	@Override
 	protected List<Class<?>> declareEmittedEvents() {
-		return List.of(TransferRequestEvent.class);
+		return List.of(DoTransferClick.class);
 	}
 
 	private void addSendRows(TransferPanelData data) {

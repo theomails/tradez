@@ -13,13 +13,13 @@ import net.progressit.tradez.model.Player;
 import net.progressit.tradez.model.TradezData;
 import net.progressit.tradez.panels.transfer.TransferPanel.TransferParty;
 import net.progressit.tradez.panels.transfer.TransferPanel.TransferPartyType;
-import net.progressit.tradez.panels.transfer.TransferPanel.TransferRequestEvent;
+import net.progressit.tradez.panels.transfer.TransferPanel.DoTransferClick;
 import net.progressit.util.CollectionsUtil;
 
 public class TradezTransactionLogic {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TradezTransactionLogic.class.getName());
 	
-	public boolean doTransfter(TradezData data, TransferRequestEvent tr, Consumer<TradezData> dataSetter) {
+	public boolean doTransfter(TradezData data, DoTransferClick tr, Consumer<TradezData> dataSetter) {
 		LOGGER.info("TRF");
 		if(tr.getFrom().equals(tr.getTo())) return true;
 		

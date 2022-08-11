@@ -30,8 +30,8 @@ import net.progressit.progressive.PPlacers;
 import net.progressit.progressive.helpers.PSimpleLifecycleHandler;
 import net.progressit.tradez.model.Player;
 import net.progressit.tradez.panels.dice.DicePanel;
-import net.progressit.tradez.panels.dice.DicePanel.DiceRequestRollEvent;
-import net.progressit.tradez.panels.dice.DicePanel.MovePlayerEvent;
+import net.progressit.tradez.panels.dice.DicePanel.DiceRollClick;
+import net.progressit.tradez.panels.dice.DicePanel.MovePlayerByDiceClick;
 import net.progressit.tradez.panels.dice.DicePanelData;
 import net.progressit.tradez.panels.holdings.HoldingsPanel;
 import net.progressit.tradez.panels.holdings.HoldingsPanelData;
@@ -50,11 +50,11 @@ public class PlayersPanel extends PComponent<PlayersPanelData, PlayersPanelData>
 	
 	private PEventListener diceListener = new PEventListener() {
 		@Subscribe
-		public void handle(DiceRequestRollEvent drr ) {
+		public void handle(DiceRollClick drr ) {
 			PlayersPanel.this.post(drr);
 		}
 		@Subscribe
-		public void handle(MovePlayerEvent mp ) {
+		public void handle(MovePlayerByDiceClick mp ) {
 			PlayersPanel.this.post(mp);
 		}
 	};
@@ -126,7 +126,7 @@ public class PlayersPanel extends PComponent<PlayersPanelData, PlayersPanelData>
 
 	@Override
 	protected List<Class<?>> declareEmittedEvents() {
-		return List.of(PlayerSelectedEvent.class, DiceRequestRollEvent.class, MovePlayerEvent.class);
+		return List.of(PlayerSelectedEvent.class, DiceRollClick.class, MovePlayerByDiceClick.class);
 	}
 
 	@Override

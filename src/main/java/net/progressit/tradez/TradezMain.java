@@ -32,7 +32,7 @@ public class TradezMain {
 	public static final EventBus GLOBAL_BUS = new EventBus();
 	
 	@Data
-	public static class PlayerAddedEvent{
+	public static class AddPlayerClick{
 		private final Player player;
 	}
 	
@@ -90,6 +90,6 @@ public class TradezMain {
 	
 	public void addPlayer(Player player) {
 		if(addPlayerDialog!=null) addPlayerDialog.dispose();
-		GLOBAL_BUS.post(new PlayerAddedEvent(player));
+		GLOBAL_BUS.post(new AddPlayerClick(player));
 	}
 }

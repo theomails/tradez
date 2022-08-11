@@ -26,9 +26,9 @@ import net.progressit.progressive.helpers.PSimpleLifecycleHandler;
 public class TileActionPanel extends PComponent<TilePanelData, TilePanelData>{
 	private static final Logger LOGGER = LoggerFactory.getLogger(TileActionPanel.class.getName());
 	
-	public static class JumpToSelectedTile{}
-	public static class BuySelectedTile{}
-	public static class AddTicketBooth{}
+	public static class JumpToSelectedTileClick{}
+	public static class BuySelectedTileClick{}
+	public static class AddTicketBoothClick{}
 	
 	private JPanel panel = new JPanel(new MigLayout("insets 15","[180::180, fill][grow][]","[]"));
 	private JPanel pnlTilePanelWrapper = new JPanel(new BorderLayout());
@@ -69,9 +69,9 @@ public class TileActionPanel extends PComponent<TilePanelData, TilePanelData>{
 				pnlButtons.add(btnAddTicketBooth, "wrap, hidemode 3");
 				pnlButtons.setOpaque(false);
 				
-				btnJumpHere.addActionListener( (e) -> TileActionPanel.this.post(new JumpToSelectedTile()) );
-				btnBuyTile.addActionListener( (e) -> TileActionPanel.this.post(new BuySelectedTile()) );
-				btnAddTicketBooth.addActionListener( (e) -> TileActionPanel.this.post(new AddTicketBooth()) );
+				btnJumpHere.addActionListener( (e) -> TileActionPanel.this.post(new JumpToSelectedTileClick()) );
+				btnBuyTile.addActionListener( (e) -> TileActionPanel.this.post(new BuySelectedTileClick()) );
+				btnAddTicketBooth.addActionListener( (e) -> TileActionPanel.this.post(new AddTicketBoothClick()) );
 				
 			}
 			@Override
@@ -83,7 +83,7 @@ public class TileActionPanel extends PComponent<TilePanelData, TilePanelData>{
 
 	@Override
 	protected List<Class<?>> declareEmittedEvents() {
-		return List.of(JumpToSelectedTile.class, BuySelectedTile.class, AddTicketBooth.class);
+		return List.of(JumpToSelectedTileClick.class, BuySelectedTileClick.class, AddTicketBoothClick.class);
 	}
 
 	@Override

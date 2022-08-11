@@ -14,22 +14,22 @@ import org.slf4j.LoggerFactory;
 import com.google.common.eventbus.EventBus;
 
 import lombok.Data;
-import net.progressit.tradez.TradezMain.PlayerAddedEvent;
+import net.progressit.tradez.TradezMain.AddPlayerClick;
 import net.progressit.tradez.model.Holdings;
 import net.progressit.tradez.model.Player;
 import net.progressit.tradez.model.Tile;
 import net.progressit.tradez.model.TradezData;
 import net.progressit.tradez.panels.TradezOuterPanel;
 import net.progressit.tradez.panels.chance.ChancePanel.ChanceClearCurrentCardEvent;
-import net.progressit.tradez.panels.chance.ChancePanel.ChancePickCardEvent;
-import net.progressit.tradez.panels.dice.DicePanel.DiceRequestRollEvent;
-import net.progressit.tradez.panels.dice.DicePanel.MovePlayerEvent;
+import net.progressit.tradez.panels.chance.ChancePanel.ChancePickCardClick;
+import net.progressit.tradez.panels.dice.DicePanel.DiceRollClick;
+import net.progressit.tradez.panels.dice.DicePanel.MovePlayerByDiceClick;
 import net.progressit.tradez.panels.player.PlayersPanel.PlayerSelectedEvent;
-import net.progressit.tradez.panels.tile.TileActionPanel.AddTicketBooth;
-import net.progressit.tradez.panels.tile.TileActionPanel.BuySelectedTile;
-import net.progressit.tradez.panels.tile.TileActionPanel.JumpToSelectedTile;
+import net.progressit.tradez.panels.tile.TileActionPanel.AddTicketBoothClick;
+import net.progressit.tradez.panels.tile.TileActionPanel.BuySelectedTileClick;
+import net.progressit.tradez.panels.tile.TileActionPanel.JumpToSelectedTileClick;
 import net.progressit.tradez.panels.tile.TilePanel.TileClicked;
-import net.progressit.tradez.panels.transfer.TransferPanel.TransferRequestEvent;
+import net.progressit.tradez.panels.transfer.TransferPanel.DoTransferClick;
 import net.progressit.util.CollectionsUtil;
 
 public class TradezLogic {
@@ -42,6 +42,7 @@ public class TradezLogic {
 	@Data
 	public static class LogEvent{
 		private final Object originalEvent;
+		private final TradezData contextData;
 	}
 	
 	private final EventBus globalBus;
@@ -57,7 +58,7 @@ public class TradezLogic {
 
 	//Convenience functions
 	private void log(Object event) {
-		globalBus.post(new LogEvent(event));
+		globalBus.post(new LogEvent(event, tradezPanel.getData()));
 	}
 	private TradezData getTradeData() {
 		return tradezPanel.getData();
@@ -68,7 +69,6 @@ public class TradezLogic {
 	
 	public void handle(TileClicked tc) {
 		LOGGER.info("Tile clicked: " + tc);
-		log(tc);
 		
 		TradezData data = getTradeData();
 		//Select that tile
@@ -78,9 +78,8 @@ public class TradezLogic {
 
 	}
 	
-	public void handle(PlayerAddedEvent pa) {
+	public void handle(AddPlayerClick pa) {
 		LOGGER.info("Player added: " + pa);
-		log(pa);
 		
 		TradezData data = getTradeData();
 		Player player = pa.getPlayer();
@@ -101,6 +100,7 @@ public class TradezLogic {
 				.playerPosition(playerPositionsNew)
 				.build());
 		
+		log(pa);
 		if(playersNew.size()==1) {
 			//When first player gets added, select player
 			LOGGER.info("Selecting player:: " + pa.getPlayer());
@@ -109,7 +109,6 @@ public class TradezLogic {
 	}
 	public void handle(PlayerSelectedEvent ps) {
 		LOGGER.info("Player selected: " + ps);
-		log(ps);
 		
 		TradezData data = getTradeData();
 		//Select that Player and his current positioned Tile
@@ -123,20 +122,17 @@ public class TradezLogic {
 		globalBus.post(ps);
 	}
 	
-	public void handle(DiceRequestRollEvent drr ) {
-		log(drr);
-		
+	public void handle(DiceRollClick drr ) {
 		TradezData data = getTradeData();
 		//Throw random dice and set that dice value for display
 		int diceValue = random.nextInt(6) + 1;
 		setTradeData(data.toBuilder()
 				.currentDiceValue(Optional.of(diceValue))
 				.build());
+		log(drr);
 	}
 	
-	public void handle(MovePlayerEvent mp ) {
-		log(mp);
-		
+	public void handle(MovePlayerByDiceClick mp ) {
 		TradezData data = getTradeData();
 		//Get current displayed dice value, get current player, get his/her position, move to new position, consider bounds
 		int diceValue = data.getCurrentDiceValue().get();
@@ -145,12 +141,11 @@ public class TradezLogic {
 		Integer curPosition = playerPositions.get(currentPlayer);
 		int newPosition = (curPosition+diceValue)%data.getAllTiles().size();
 		moveCurrentPlayer(data, newPosition);
+		log(mp);
 	}
 	
-	public void handle(ChancePickCardEvent cpc) {
+	public void handle(ChancePickCardClick cpc) {
 		LOGGER.info("ChancePickCardEvent: " + cpc);
-		log(cpc);
-		
 		TradezData data = getTradeData();
 		//Remove one chance card from available, set the current chance card for display
 		List<String> copyChanceCards = CollectionsUtil.cloneToArrayList(data.getAvailableChanceCards());
@@ -162,6 +157,7 @@ public class TradezLogic {
 				.currentChanceCard(Optional.of(newChanceCard))
 				.availableChanceCards(copyChanceCards)
 				.build());
+		log(cpc);
 	}
 	public void handle(ChanceClearCurrentCardEvent cclear) {
 		LOGGER.info("ChanceClearCurrentCardEvent: " + cclear);
@@ -172,15 +168,12 @@ public class TradezLogic {
 				.currentChanceCard(Optional.empty())
 				.build());
 	}
-	public void handle(JumpToSelectedTile j) {
-		log(j);
-		
+	public void handle(JumpToSelectedTileClick j) {
 		int newTileIndex = getTradeData().getAllTiles().indexOf(getTradeData().getCurrentTile().get());
 		moveCurrentPlayer(getTradeData(), newTileIndex);
+		log(j);
 	}
-	public void handle(BuySelectedTile b) {
-		log(b);
-		
+	public void handle(BuySelectedTileClick b) {
 		TradezData data = getTradeData();
 		Player player = data.getCurrentPlayer().get();
 		Tile tile = data.getCurrentTile().get();
@@ -190,10 +183,9 @@ public class TradezLogic {
 		tilesPossessedNew.add(tile);
 		playerHoldingsCopy.put(player, curPlayerHoldings.toBuilder().tilesPossessed(tilesPossessedNew).build());
 		setTradeData(data.toBuilder().playerHoldings(playerHoldingsCopy).build());
+		log(b);
 	}
-	public void handle(AddTicketBooth a) {
-		log(a);
-		
+	public void handle(AddTicketBoothClick a) {
 		TradezData data = getTradeData();
 		Map<Tile, Integer> tileHousesNew = CollectionsUtil.cloneToHashMap(data.getTileHouses());
 		Integer curTileHouses = tileHousesNew.get(data.getCurrentTile().get());
@@ -201,6 +193,7 @@ public class TradezLogic {
 		curTileHouses++;
 		tileHousesNew.put(data.getCurrentTile().get(), curTileHouses);
 		setTradeData(data.toBuilder().tileHouses(tileHousesNew).build());
+		log(a);
 	}
 	
 	void moveCurrentPlayer(TradezData data, int newTileIndex) {
@@ -216,13 +209,14 @@ public class TradezLogic {
 				.build());
 	}
 	
-	public void handle(TransferRequestEvent tr) {
+	public void handle(DoTransferClick tr) {
 		LOGGER.info("Logic to TTL");
-		log(tr);
 		
 		boolean success = new TradezTransactionLogic().doTransfter(getTradeData(), tr, tradeDataSetter);
 		if(!success) {
 			JOptionPane.showMessageDialog(null, "Not enough of the selected currency to make the transfer!", "Transfer Error", JOptionPane.ERROR_MESSAGE);
+		}else {
+			log(tr);
 		}
 		LOGGER.info("Posting TSE");
 		globalBus.post( new TransferStatusEvent(success) );

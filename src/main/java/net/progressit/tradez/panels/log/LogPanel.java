@@ -44,7 +44,9 @@ public class LogPanel extends PLeafComponent<LogPanelData, LogPanelData>{
 	protected void renderSelf(LogPanelData data) {
 		LOGGER.info("Rendering..");
 		data = ensureBaseData(data);
-		List<String> logStrings = data.getLoggedEvents().stream().map( (le) -> stringer.toString(le.getOriginalEvent())).collect(Collectors.toList());
+		List<String> logStrings = data.getLoggedEvents()
+				.stream().map( (le) -> stringer.toString(le.getOriginalEvent(), le.getContextData()))
+				.collect(Collectors.toList());
 		lstLogs.setListData(logStrings.toArray(new String[] {}));
 	}
 

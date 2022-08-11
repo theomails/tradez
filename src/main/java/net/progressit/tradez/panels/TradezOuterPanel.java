@@ -32,16 +32,16 @@ import net.progressit.progressive.helpers.PComponentHelper;
 import net.progressit.progressive.helpers.PSimpleContainerPlacers;
 import net.progressit.progressive.helpers.PSimpleLifecycleHandler;
 import net.progressit.tradez.TradezLogic;
-import net.progressit.tradez.TradezMain.PlayerAddedEvent;
+import net.progressit.tradez.TradezMain.AddPlayerClick;
 import net.progressit.tradez.model.Player;
 import net.progressit.tradez.model.Tile;
 import net.progressit.tradez.model.TradezData;
 import net.progressit.tradez.panels.chance.ChancePanel;
 import net.progressit.tradez.panels.chance.ChancePanel.ChanceClearCurrentCardEvent;
-import net.progressit.tradez.panels.chance.ChancePanel.ChancePickCardEvent;
+import net.progressit.tradez.panels.chance.ChancePanel.ChancePickCardClick;
 import net.progressit.tradez.panels.chance.ChancePanelData;
-import net.progressit.tradez.panels.dice.DicePanel.DiceRequestRollEvent;
-import net.progressit.tradez.panels.dice.DicePanel.MovePlayerEvent;
+import net.progressit.tradez.panels.dice.DicePanel.DiceRollClick;
+import net.progressit.tradez.panels.dice.DicePanel.MovePlayerByDiceClick;
 import net.progressit.tradez.panels.holdings.HoldingsPanel;
 import net.progressit.tradez.panels.holdings.HoldingsPanelData;
 import net.progressit.tradez.panels.log.LogPanel;
@@ -50,15 +50,15 @@ import net.progressit.tradez.panels.player.PlayersPanel;
 import net.progressit.tradez.panels.player.PlayersPanel.PlayerSelectedEvent;
 import net.progressit.tradez.panels.player.PlayersPanelData;
 import net.progressit.tradez.panels.tile.TileActionPanel;
-import net.progressit.tradez.panels.tile.TileActionPanel.AddTicketBooth;
-import net.progressit.tradez.panels.tile.TileActionPanel.BuySelectedTile;
-import net.progressit.tradez.panels.tile.TileActionPanel.JumpToSelectedTile;
+import net.progressit.tradez.panels.tile.TileActionPanel.AddTicketBoothClick;
+import net.progressit.tradez.panels.tile.TileActionPanel.BuySelectedTileClick;
+import net.progressit.tradez.panels.tile.TileActionPanel.JumpToSelectedTileClick;
 import net.progressit.tradez.panels.tile.TilePanel;
 import net.progressit.tradez.panels.tile.TilePanel.TileClicked;
 import net.progressit.tradez.panels.tile.TilePanelData;
 import net.progressit.tradez.panels.tile.TilePanelData.TileBounds;
 import net.progressit.tradez.panels.transfer.TransferPanel;
-import net.progressit.tradez.panels.transfer.TransferPanel.TransferRequestEvent;
+import net.progressit.tradez.panels.transfer.TransferPanel.DoTransferClick;
 import net.progressit.tradez.panels.transfer.TransferPanelData;
 
 public class TradezOuterPanel extends PComponent<TradezData, TradezData>{
@@ -93,18 +93,18 @@ public class TradezOuterPanel extends PComponent<TradezData, TradezData>{
 			logic.handle(ps);
 		}
 		@Subscribe
-		public void handle(DiceRequestRollEvent drr ) {
+		public void handle(DiceRollClick drr ) {
 			logic.handle(drr);
 		}
 		@Subscribe
-		public void handle(MovePlayerEvent mp ) {
+		public void handle(MovePlayerByDiceClick mp ) {
 			logic.handle(mp);
 		}
 	};
 	
 	private PEventListener chanceListener = new PEventListener() {
 		@Subscribe
-		public void handle(ChancePickCardEvent cpc) {
+		public void handle(ChancePickCardClick cpc) {
 			logic.handle(cpc);
 		}
 		@Subscribe
@@ -115,22 +115,22 @@ public class TradezOuterPanel extends PComponent<TradezData, TradezData>{
 	
 	private PEventListener tileActionListener = new PEventListener() {
 		@Subscribe
-		public void handle(JumpToSelectedTile j) {
+		public void handle(JumpToSelectedTileClick j) {
 			logic.handle(j);
 		}
 		@Subscribe
-		public void handle(BuySelectedTile b) {
+		public void handle(BuySelectedTileClick b) {
 			logic.handle(b);
 		}
 		@Subscribe
-		public void handle(AddTicketBooth a) {
+		public void handle(AddTicketBoothClick a) {
 			logic.handle(a);
 		}
 	};
 	
 	private PEventListener transferListener = new PEventListener() {
 		@Subscribe
-		public void handle(TransferRequestEvent tr) {
+		public void handle(DoTransferClick tr) {
 			LOGGER.info("TOP to Logic");
 			logic.handle(tr);
 		}
@@ -315,7 +315,7 @@ public class TradezOuterPanel extends PComponent<TradezData, TradezData>{
 	}
 	
 	@Subscribe
-	public void handle(PlayerAddedEvent pa) {
+	public void handle(AddPlayerClick pa) {
 		logic.handle(pa);
 	}
 

@@ -25,7 +25,7 @@ public class ChancePanel extends PLeafComponent<ChancePanelData, ChancePanelData
 	private static final Logger LOGGER = LoggerFactory.getLogger( ChancePanel.class.getName() );
 	
 	@Data
-	public static class ChancePickCardEvent{}
+	public static class ChancePickCardClick{}
 	
 	@Data
 	public static class ChanceClearCurrentCardEvent{}
@@ -84,7 +84,7 @@ public class ChancePanel extends PLeafComponent<ChancePanelData, ChancePanelData
 				lblCurrentChanceMsg.setOpaque(true);
 				lblCurrentChanceMsg.setBackground(Color.white);
 				
-				btnPickCard.addActionListener( (e)-> ChancePanel.this.post( new ChancePickCardEvent() ) );
+				btnPickCard.addActionListener( (e)-> ChancePanel.this.post( new ChancePickCardClick() ) );
 				btnClose.addActionListener( (e)-> ChancePanel.this.post( new ChanceClearCurrentCardEvent() ) );
 
 			}
@@ -97,7 +97,7 @@ public class ChancePanel extends PLeafComponent<ChancePanelData, ChancePanelData
 
 	@Override
 	protected List<Class<?>> declareEmittedEvents() {
-		return List.of(ChancePickCardEvent.class, ChanceClearCurrentCardEvent.class);
+		return List.of(ChancePickCardClick.class, ChanceClearCurrentCardEvent.class);
 	}
 
 }
