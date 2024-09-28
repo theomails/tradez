@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import net.progressit.tradez.model.Holdings;
 import net.progressit.tradez.model.Player;
 import net.progressit.tradez.model.Tile;
@@ -22,6 +24,11 @@ public class TradezConfig {
 	private static Color YELLOW = new Color(0xBAB433);
 	private static Color GREEN = new Color(0x0E6A1E);
 	private static Color BLUE = new Color(0x1E4978);
+
+	public static void main(String[] args){
+		Gson g = new GsonBuilder().setPrettyPrinting().create();
+		System.out.println(g.toJson(getAllTiles()));
+	}
 	
 	public static List<Player> getDefaultPlayers(){
 		return List.of(
